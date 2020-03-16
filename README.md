@@ -1,2 +1,3 @@
-# data-science
-Repositório destinado aos exercícios e arquivos desenvolvidos durante as video-aulas e cursos de Data Science.
+# Ricardo Rolo's Data Science repository
+
+This repository is destinated to all my learnings and exercises of Data Science topics. 
