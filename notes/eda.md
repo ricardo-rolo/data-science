@@ -1,5 +1,4 @@
 # Exploratory Data Analysis Notes
----
 
 ## 1. Read, Clean and Validate:
 
