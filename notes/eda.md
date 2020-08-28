@@ -1,5 +1,7 @@
 # Exploratory Data Analysis Notes
 
+> These notes were created based on DataCamp's Exploratory Data Analysis in Python course and also part of my previous knowledge on this topic. The examples are also from the 
+
 ## 1. Read, Clean and Validate:
 
 First, we need to read the data from the source. It could be a database, a csv file or other formats. After that, it's highly recommended to clean your data, *i.e.*, remove or treat any missing, invalid, incomplete or corrupted data.  
@@ -62,7 +64,7 @@ To analyze a variable distribution, we use some of the following techniques:
 2. **PMFs (Probability Mass Functions):**  
     
     PMFs works similarly to Histograms, but it tells the probability, drawing a random element of the data, that this element is X, *i.e.*, the desired value.  
-    To work with PMFs we're going to use the `empiricaldist` python library, created by Allen Downey for DataCamp's EDA in python course.  
+    To work with PMFs we're going to use the [empiricaldist] python library, created by **Allen Downey** for DataCamp's EDA in python course.  
 
     ```python
     from empiricaldist import Pmf
@@ -76,7 +78,7 @@ To analyze a variable distribution, we use some of the following techniques:
 3. **CDFs (Cumulative Distribution Functions)**
 
     The CDF is the probability of getting a value <= X, drawing a random element of the data. In other words, the CDF is the cumulative sum of PMF.  
-    Here, we're also going to use the `empiricaldist` python library, mentioned above. The result of ```Cdf(X)``` is the amount, between 0 and 1, of the values that are **less** or **equal** than X.  
+    Here, we're also going to use the [empiricaldist] python library, mentioned above. The result of ```Cdf(X)``` is the amount, between 0 and 1, of the values that are **less** or **equal** than X.
 
     ```python
     from empiricaldist import Cdf
@@ -100,3 +102,5 @@ To analyze a variable distribution, we use some of the following techniques:
     q = cdf.inverse(p) #this returns the 25th percentile
     ```  
     In the code above, `q` corresponds to the **25th percentile** of `<data_series>`.
+    
+[empiricaldist]: https://pypi.org/project/empiricaldist/
