@@ -11,38 +11,51 @@
 
 # Exploratory Data Analysis Notes
 
-> These notes were created based on DataCamp's Exploratory Data Analysis in Python course and also part of my previous knowledge on this topic. The examples are also from the 
+> These notes were created based on DataCamp's 'Exploratory Data Analysis in Python' course and also with part of my previous knowledge on this topic.  
+
+> It's worh mentioning that this is a brief resume of an EDA process, part of the code shown here is part of the DataCamp's course. These notes were made so i can revise the content of the course in case i forgot something after completing it, and i decided to share it so others can rely on this document as well ;).
 
 ## 1. Read, Clean and Validate:
 
-First, we need to read the data from the source. It could be a database, a csv file or other formats. After that, it's highly recommended to clean your data, *i.e.*, remove or treat any missing, invalid, incomplete or corrupted data.  
+First, we need to read the data from the source. It could be a database, a csv file or other formats. After that, it's highly recommended, i would say mandatory, to clean your data, *i.e.*, remove or treat any missing, invalid, incomplete or corrupted data.  
 
 ### 1.1 Reading  
 
+* #### Reading a csv file
 ```python
 import pandas as pd
-data = pd.read_csv('../data/billboard.csv')
+#Create a dataframe
+data = pd.read_csv('<file_path>')
 ```
 
-**PS: Always remember to constantly check the data documentation before treating it.** 
+* #### Querying from a relational database
+```python
+import pandas as pd
+from sqlalchemy import create_engine
+
+conn = create_engine('<database_path>')
+data = pd.read_sql_query('<sql_query>', conn)
+```
+
+**PS: Always remember to constantly check the data documentation, if provided, from your data source, before treating it.** 
 
 ### 1.2 Cleaning
 
 * #### Replacing
-   We can use this technique to replace outliers, missing values, corrupted data and many more. The value to replace with could be any value you want, but there are some methods like mean, median, or, for example, replacing the outliers with the max/min non-outlier values. It's up to you infer the best approach here.  
+  We can use this technique to replace outliers, missing values, corrupted data and many more. The value to replace with could be any value you want, but there are some methods like mean, median, or, for example, replacing the outliers with the max/min non-outlier values. It's up to you infer the best approach here.  
 
 ```python
 #Replace all the <value_to_be_replaced> values with <value_to_replace_with>
-data[<column>].replace(to_replace=<value_to_be_replaced>,
+data['<column>'].replace(to_replace=<value_to_be_replaced>,
                         value=<value_to_replace_with>,
                         inplace=True)
 ```  
 
-* #### Filling
-   Filling is most used to 
+* #### Filling  
+
 ```python
 #Fill all NA/null values of <column> with <value>
-data[<column>].fillna(<value>)
+data['<column>'].fillna(<value>)
 ```  
 
 * #### Trimming
@@ -59,7 +72,23 @@ data.dropna(subset=<columns_list>, inplace=True, axis='index')
 data.dropna(subset=<columns_list>, inplace=True, axis='columns')
 ```  
 
+* #### Drop duplicates
+
+`Complete duplicates`  
+Here, we'll drop only the **rows** that contains **all** values as duplicates, *i.e.*, the dataset has another row(s) which is/are identical to the one(s) dropped.
+```python
+data.drop_duplicates(inplace=True)
+```  
+
+`Partial duplicates`  
+Here, we'll drop only the **rows** that contains duplicated values on the columns specified on the subset argument of the function.
+```python
+data.drop_duplicates(subset=<columns_list>, inplace=True)
+```  
+
 ### 1.3 Validating
+
+To validate a variable, you could use some pandas attributes and methods. The goal here is to check if the variables are, in fact, according to your expectations.
 
 ## 2. Distributions:
 
@@ -81,13 +110,8 @@ plt.hist(<data_series>)
 
 ### 2.2 PMFs (Probability Mass Functions)
     
-<<<<<<< HEAD
 PMFs works similarly to Histograms, but it tells the probability, drawing a random element of the data, that this element is X, *i.e.*, the desired value.  
 To work with PMFs we're going to use the [empiricaldist] python library, created by Allen Downey for DataCamp's EDA in python course.  
-=======
-    PMFs works similarly to Histograms, but it tells the probability, drawing a random element of the data, that this element is X, *i.e.*, the desired value.  
-    To work with PMFs we're going to use the [empiricaldist] python library, created by **Allen Downey** for DataCamp's EDA in python course.  
->>>>>>> 89fb87f2d61c61f0b871ba1c55181769306fe510
 
 ```python
 from empiricaldist import Pmf
@@ -99,11 +123,6 @@ pmf.bar()
 plt.show()
 ```  
 
-<<<<<<< HEAD
-=======
-    The CDF is the probability of getting a value <= X, drawing a random element of the data. In other words, the CDF is the cumulative sum of PMF.  
-    Here, we're also going to use the [empiricaldist] python library, mentioned above. The result of ```Cdf(X)``` is the amount, between 0 and 1, of the values that are **less** or **equal** than X.
->>>>>>> 89fb87f2d61c61f0b871ba1c55181769306fe510
 
 ### 2.3 CDFs (Cumulative Distribution Functions)
 
@@ -134,12 +153,4 @@ q = cdf.inverse(p) #this returns the 25th percentile
 In the code above, `q` corresponds to the **25th percentile** of `<data_series>`.
 
 
-<<<<<<< HEAD
-=======
-    p = 0.25
-    q = cdf.inverse(p) #this returns the 25th percentile
-    ```  
-    In the code above, `q` corresponds to the **25th percentile** of `<data_series>`.
-    
->>>>>>> 89fb87f2d61c61f0b871ba1c55181769306fe510
 [empiricaldist]: https://pypi.org/project/empiricaldist/
