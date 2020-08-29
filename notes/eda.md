@@ -1,3 +1,6 @@
+
+# Exploratory Data Analysis Notes
+
 - [Exploratory Data Analysis Notes](#exploratory-data-analysis-notes)
   - [1. Read, Clean and Validate:](#1-read-clean-and-validate)
     - [1.1 Reading](#11-reading)
@@ -11,9 +14,6 @@
     - [2.5 PDFs (Probability Density Functions)](#25-pdfs-probability-density-functions)
   - [3. Relationships](#3-relationships)
   - [4. Multivariate thinking](#4-multivariate-thinking)
-
-
-# Exploratory Data Analysis Notes
 
 > These notes were created based on DataCamp's 'Exploratory Data Analysis in Python' course and also with part of my previous knowledge on this topic.  
 
