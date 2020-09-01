@@ -300,7 +300,7 @@ To see if `a pair` of variables are related, we analyze their relationship, *i.e
    ```python
    import numpy as np
 
-   fx = np.array([<variable1>.min(), <variable1>.max()])
+   fx = np.array([xs.min(), xs.max()])
    fy = res.intercept + res.slope * fx 
    plt.plot(fx, fy, '-')
    ```  
