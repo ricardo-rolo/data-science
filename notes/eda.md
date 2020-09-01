@@ -17,9 +17,9 @@
     - [3.2 Correlation](#32-correlation)
   - [4. Multivariate thinking](#4-multivariate-thinking)
 
-> These notes were created based on DataCamp's 'Exploratory Data Analysis in Python' course and also with part of my previous knowledge on this topic.  
+> These notes were created based on DataCamp's [Exploratory Data Analysis in Python](https://learn.datacamp.com/courses/exploratory-data-analysis-in-python) course and also with part of my previous knowledge on this topic.  
 
-> It's worh mentioning that this is a brief resume of an EDA process, part of the code shown here is part of the DataCamp's course. These notes were made so i can revise the content of the course in case i forgot something after completing it, and i decided to share it so others can rely on this document as well ;).
+> It's worh mentioning that this is a brief resume of an EDA process, the most part of the code shown here is a generic version from the DataCamp's course. These notes were made so i can revise the content of the course in case i forgot something after completing it, and i decided to share it so others can rely on this document as well ;).
 
 ## 1. Read, Clean and Validate:
 
