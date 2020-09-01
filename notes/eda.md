@@ -13,6 +13,8 @@
     - [2.4 Box plots](#24-box-plots)
     - [2.5 PDFs (Probability Density Functions)](#25-pdfs-probability-density-functions)
   - [3. Relationships](#3-relationships)
+    - [3.1 Visualization](#31-visualization)
+    - [3.2 Correlation](#32-correlation)
   - [4. Multivariate thinking](#4-multivariate-thinking)
 
 > These notes were created based on DataCamp's 'Exploratory Data Analysis in Python' course and also with part of my previous knowledge on this topic.  
@@ -21,7 +23,7 @@
 
 ## 1. Read, Clean and Validate:
 
-First, we need to read the data from the source. It could be a database, a csv file or other formats. After that, it's highly recommended, i would say mandatory, to clean your data, *i.e.*, remove or treat any missing, invalid, incomplete or corrupted data.  
+First, we need to read the data from the source. It could be a database, a csv file or other formats. After that, it's highly recommended, i would say mandatory, to clean our data, *i.e.*, remove or treat any missing, invalid, incomplete or corrupted data.  
 
 ### 1.1 Reading  
 
@@ -46,7 +48,7 @@ First, we need to read the data from the source. It could be a database, a csv f
 ### 1.2 Cleaning
 
 * #### Replacing
-  We can use this technique to replace outliers, missing values, corrupted data and many more. The value to replace with could be any value you want, but there are some methods like mean, median, or, for example, replacing the outliers with the max/min non-outlier values. It's up to you infer the best approach here.  
+  We can use this technique to replace outliers, missing values, corrupted data and many more. The value to replace with could be any value we want, but there are some methods like mean, median, or, for example, replacing the outliers with the max/min non-outlier values. It's up to you infer the best approach here.  
 
   ```python
   #Replace all the <value_to_be_replaced> values with <value_to_replace_with>
@@ -93,7 +95,7 @@ First, we need to read the data from the source. It could be a database, a csv f
 
 ### 1.3 Validating
 
-To validate a variable, you could use some pandas attributes and methods. The goal here is to check if the variables are, in fact, according to your expectations. Since this step may vary a lot, according to the business and data provided, we'll only mention some useful methods you can try:  
+To validate a variable, we could use some pandas attributes and methods. The goal here is to check if the variables are, in fact, according to our expectations. Since this step may vary a lot, according to the business and data provided, we'll only mention some useful methods you can try:  
 
   * Filtering  
   * Plotting
@@ -178,9 +180,10 @@ plt.boxplot(<data_series>)
 ```  
 
 ### 2.5 PDFs (Probability Density Functions)
-   
+    
 In this case, we'll use the KDE (Kernel Density Estimation) to estimate the probability density function of a random variable based on its PMF.  
-The [kdeplot](https://seaborn.pydata.org/generated/seaborn.kdeplot.html) method of seaborn library takes a series, estimate its PDF and then plot it.
+The [kdeplot](https://seaborn.pydata.org/generated/seaborn.kdeplot.html) method of seaborn library takes a series, estimate its PDF and then plot it.  
+
 ```python
 import seaborn as sns
 
@@ -189,13 +192,122 @@ sns.kdeplot(<data_series>)
 
 **Tooltips:**  
 
-  1. Use CDFs for exploration
-  2. Use PMFs if there is a small number of unique values
-  3. Use KDE if there are a lot of values
-  4. Sometimes, PDFs can be too sensitive to randomness, in these cases, consider using CDFs instead.  
+1. Use CDFs for exploration
+2. Use PMFs if there is a small number of unique values
+3. Use KDE if there are a lot of values
+4. Sometimes, PDFs can be too sensitive to randomness, in these cases, consider using CDFs instead.  
 
-## 3. Relationships
+## 3. Relationships  
+
+To see if `a pair` of variables are related, we analyze their relationship, *i.e.*, we compare their values directly to show any correlation, we can see if two variables grow in the same proportion, or if a variable grows, the another one decreases, for example.  
+
+### 3.1 Visualization
+
+- #### Scatter Plots  
+
+  The Scatter plot is the most common way to visualize the relationship between two variables, it shows a single dot, with its correspondent x (variable 1) and y (variable 2) values, for each observation of the data specified.  
+
+  ```python
+  import matplotlib.pyplot as plt
+
+  plt.plot(<variable1>, <variable2>)
+  ```  
+
+  Sometimes, the data may look noisy (overplotting), which can be treated changing the plot's style, or corrupted, for example: a column 'weight' (in kilograms) that were created based on another weight column, which was primarily measured in pounds. The rounding of the values after the conversion may cause a grouping on the new column, making its values be discretely separated into bins.  
+
+  We can treat the second one using a technique named `Jittering`, which consists in adding random noise to these values, filling in the values that got corrupted, like the rounding problem shown above.  
+
+  ```python
+  import numpy as np
+
+  data_new = data['<column>'] + np.random.normal(<mean>, <std>, size=len(data))
+  ```
+
+- #### Box Plots
+
+  Box plots are also used to visualize variables relationship, since the relationship between them is as comparison of the distribution of the variable y for each group (bin) of the variable x. It does that by estimating the KDE for each bin. To do that, we need to drop the NA values of each variable:  
+
+  ```python
+  import pandas as pd
+
+  plot_data = data.dropna(subset=['<variable1>', '<variable2>'])
+  ```  
+  And then, plot the values:
+
+  ```python
+  import seaborn as sns
+
+  sns.boxplot(x='<variable1>', y='<variable2>', data=<data_frame>)
+  ```  
+
+  To avoid showing big disparities (skewness) of the values, we could set the y axis scale to logarithmic as follows:  
+
+  ```python
+  plt.yscale('log')
+  ```  
+
+- #### Violin Plots
+
+  What a violin plot do is basically take the groups (bins) of a variable (tipically the x axis), and infers its PDF, for each of these groups, by using KDE, and then plot it. It's similar to the boxplot, each column is a graphical representation of the distribution of a variable in its group.
+
+  ```python
+  import seaborn as sns
+
+  sns.violinplot(x='<variable1>', y='<variable2>', data=<data_frame>)
+  ```  
+  Here, we could also use axis in logarithmic scale.  
+
+### 3.2 Correlation
+
+- #### [Pearson's Correlation Coefficient]
+
+  The PCC determines whether a `linear correlation` between a subset of variables is positive, negative or if there is no correlation between them.  
+  We can set this subset as follows:  
+
+  ```python
+  subset = <columns_list>
+  ```  
+
+  And then, use this subset to filter the original dataframe and show its [correlation matrix]:  
+
+  ```python
+  import pandas as pd
+
+  correlation = data[subset]
+  correlation.corr()
+  ```
+
+  **PS: Remember that if a PCC between two variables is 0 (zero), that concludes that there is no `linear correlation` between them, but `doesn't` mean that there is `no correlation`, they could have a `non-linear correlation`.**  
+
+- #### Simple Regression
+  
+  Be aware that even if a PCC isn't a strong value, *i.e*, close to 1 or -1, there still could be an interesting correlation between the variables. To see that, we need to look at the `slope` of the regression line fitted, as shown below:  
+
+  **PS: Remember that there could still be a `non-linear correlation` between them. To check the relationship between them we'll need to use multiple regression, covered in the [Multivariate thinking](#4-multivariate-thinking) session**
+
+  ```python
+  from scipy.stats import linregress
+
+  subset = data.dropna(subset=['<variable1>', '<variable2>'])
+  xs = subset['<variable1>']
+  ys = subset['<variable2>']
+  res = linregress(xs, ys)
+  ```
+   This returns a `LinregressResult` object from the scipy.stats `linregress` function. Check the [documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html) to see what are the atributes of this object.   
+
+   We can use this object to compute the line of best fit as follows:  
+
+   ```python
+   import numpy as np
+
+   fx = np.array([<variable1>.min(), <variable1>.max()])
+   fy = res.intercept + res.slope * fx 
+   plt.plot(fx, fy, '-')
+   ```  
+
 
 ## 4. Multivariate thinking
 
 [empiricaldist]: https://pypi.org/project/empiricaldist/
+[Pearson's Correlation Coefficient]: https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
+[correlation matrix]: https://www.displayr.com/what-is-a-correlation-matrix/#:~:text=A%20correlation%20matrix%20is%20a,a%20diagnostic%20for%20advanced%20analyses.
