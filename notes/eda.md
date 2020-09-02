@@ -58,7 +58,7 @@ First, we need to read the data from the source. It could be a database, a csv f
   ```  
 
 * #### Filling  
-  This method is commonly used to fill all missing values (NA/NaN/NaT) of a columns from a dataframe.  
+  This method is commonly used to fill all missing values (NA/NaN/NaT) of a column from a dataframe.  
   
   ```python
   #Fill all NA/null values of <column> with <value>
