@@ -283,7 +283,9 @@ To see if `a pair` of variables are related, we analyze their relationship, *i.e
   
   Be aware that even if a PCC isn't a strong value, *i.e*, close to 1 or -1, there still could be an interesting correlation between the variables. To see that, we need to look at the `slope` of the regression line fitted, as shown below:  
 
-  **PS: Remember that there could still be a `non-linear correlation` between them. To check the relationship between them we'll need to use multiple regression, covered in the [Multivariate thinking](#4-multivariate-thinking) session**
+  **PS: Remember that there could still be a `non-linear correlation` between them. To check the relationship between them we'll need to use multiple regression, covered in the [Multivariate thinking](#4-multivariate-thinking) session.**  
+
+  **Also, keep in mind that linear regression `is not symmetric`, so a linear regression to variable1 onto variable2 is not the same thing as a regression to variable2 onto variable1. That concludes that `linear regression` does not tell much about `causation`.**
 
   ```python
   from scipy.stats import linregress
@@ -308,6 +310,45 @@ To see if `a pair` of variables are related, we analyze their relationship, *i.e
 
 ## 4. Multivariate thinking
 
+In this section we'll see how to fit a multiple regression onto our dataset. A way to check a relationship between two variables is by analyzing the scatter plot of our data, grouped by the variable we are going to use to predict the values, filter it selecting the variable we want to predict, then compute an aggregation, most commonly mean, and plot it:  
+
+```python
+grouped = data.groupby('<variable_used_to_predict>')
+filtered = grouped['<variable_to_be_predicted>'].mean()
+plt.plot(filtered, 'o')
+```
+
+After checking the relationship between them, we'll start building a simple regression model using the [statsmodels] library as follows:  
+
+```python
+import statsmodels.formula.api as smf
+
+results = smf.ols('<variable_to_be_predicted> ~ <variable_used_to_predict>').fit()
+results.params
+```  
+- ### Adding a quadratic term
+
+  This the simplest way to transform a simple regression into a multiple regression, we can do that as shown below:  
+
+  ```python
+  data['<variable_used_to_predict_2>'] = data['<variable_used_to_predict>'] ** 2
+
+  results = smf.ols('<variable_to_be_predicted> ~ <variable_used_to_predict> + <variable_used_to_predict_2>').fit())
+  ```  
+
+- ### Generating predictions
+
+  text
+
+- ### Visualizing predictions
+
+  text
+
+- ### Logistic Regression
+  
+  To make a logistic regression, we should start with a categorical variable
+
 [empiricaldist]: https://pypi.org/project/empiricaldist/
 [Pearson's Correlation Coefficient]: https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
 [correlation matrix]: https://www.displayr.com/what-is-a-correlation-matrix/#:~:text=A%20correlation%20matrix%20is%20a,a%20diagnostic%20for%20advanced%20analyses.
+[statsmodels]: https://www.statsmodels.org/stable/index.html
