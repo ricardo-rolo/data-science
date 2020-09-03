@@ -16,6 +16,8 @@
     - [3.1 Visualization](#31-visualization)
     - [3.2 Correlation](#32-correlation)
   - [4. Multivariate thinking](#4-multivariate-thinking)
+    - [4.1 Multiple Regression](#41-multiple-regression)
+    - [4.2 Logistic Regression](#42-logistic-regression)
 
 > These notes were created based on DataCamp's [Exploratory Data Analysis in Python](https://learn.datacamp.com/courses/exploratory-data-analysis-in-python) course and also with part of my previous knowledge on this topic.  
 
@@ -310,6 +312,8 @@ To see if `a pair` of variables are related, we analyze their relationship, *i.e
 
 ## 4. Multivariate thinking
 
+### 4.1 Multiple Regression
+
 In this section we'll see how to fit a multiple regression onto our dataset. A way to check a relationship between two variables is by analyzing the scatter plot of our data, grouped by the variable we are going to use to predict the values, filter it selecting the variable we want to predict, then compute an aggregation, most commonly mean, and plot it:  
 
 ```python
@@ -326,27 +330,105 @@ import statsmodels.formula.api as smf
 results = smf.ols('<variable_to_be_predicted> ~ <variable_used_to_predict>').fit()
 results.params
 ```  
-- ### Adding a quadratic term
+- #### Adding a quadratic term
 
   This the simplest way to transform a simple regression into a multiple regression, we can do that as shown below:  
 
   ```python
-  data['<variable_used_to_predict_2>'] = data['<variable_used_to_predict>'] ** 2
+  data['<sqr_variable_used_to_predict>'] = data['<variable_used_to_predict>'] ** 2
 
-  results = smf.ols('<variable_to_be_predicted> ~ <variable_used_to_predict> + <variable_used_to_predict_2>').fit())
+  results = smf.ols('<variable_to_be_predicted> ~ <variable_used_to_predict> + <sqr_variable_used_to_predict>', data = data).fit())
+  ```  
+  We can do this with multiple variables, just add it and its quadratic term.  
+
+- #### Generating predictions
+
+  To generate predictions, we'll use the [statsmodels] predict method, which takes a dataframe as an argument and returns a series with a prediction for each row of the dataframe.  
+  We can do this by creating a new dataframe, based on the values of the original one:  
+
+  ```python
+  import pandas as pd
+  import numpy as np
+  df = pd.DataFrame()
+  df['<variable1>'] = np.linspace(<min>, <max>) #creates a linear space with the range specified
+  df['<sqr_variable1>'] = df['<variable1>'] ** 2
+  ```  
+  And then pin a value for the another variable to check the predictions made for it:  
+
+  ```python
+  df['<variable2>'] = <constant>
+  df['<sqr_variable2>'] = df['<variable2>'] ** 2
+  ```  
+  After that, we take the results variable, previously created adding quadratic terms, and call the predict method on it to make the predictions:  
+
+  ```python
+  predictions = results.predict(df)
+  ```  
+  
+- #### Visualizing predictions
+
+  To visualize the predictions made, and compare it to the average values of the real data, we can use the following techniques:  
+
+  ```python
+  plt.plot(df['<variable1>', predictions]) #this will take the linear space created and use it as the x-axis and the predictions on the y-axis
+
+  plt.plot(filtered, 'o', alpha=0.5) #plotting the average values of the real data, filtered before
   ```  
 
-- ### Generating predictions
-
-  text
-
-- ### Visualizing predictions
-
-  text
-
-- ### Logistic Regression
+- #### Adding categorical variables
   
-  To make a logistic regression, we should start with a categorical variable
+  To add a categorical variable, we just need to add a term on the code as shown below:  
+
+  ```python
+  results = smf.ols('<variable_to_be_predicted> ~ <variable_used_to_predict> + <sqr_variable_used_to_predict> + C(<categorical_variable>)', data = data).fit())
+  ```
+### 4.2 Logistic Regression
+  
+To make a logistic regression, we should start with a `categorical variable` with 2 values, *i.e.*, a boolean variable, mapped to 0s and 1s. The way to do it, is very similar to making a multiple regression, but here we'll use the `logit` method of [statsmodels] as shown below:  
+
+```python
+formula = '<variable_to_be_predicted> ~ <variable_used_to_predict> + <sqr_variable_used_to_predict> + C(<categorical_variable>)'
+results = smf.logit(formula, data = data).fit())
+```
+- #### Generating predictions
+
+  To generate predictions, we'll use the [statsmodels] predict method, the same way we did to [Multiple Regression](#41-multiple-regression), but here we'll also pin the categorical variable.  
+  First, choose the variable that should not be pinned and create a linear space with it:    
+
+  ```python
+  import pandas as pd
+  import numpy as np
+  df = pd.DataFrame()
+  df['<variable1>'] = np.linspace(<min>, <max>) #creates a linear space with the range specified
+  df['<sqr_variable1>'] = df['<variable1>'] ** 2
+  ```  
+  And then pin a value for the another variable to check the predictions made for it:  
+
+  ```python
+  df['<variable2>'] = <constant>
+  df['<sqr_variable2>'] = df['<variable2>'] ** 2
+  ```  
+  After that, we'll pin the boolean values, take the results variable, previously created, and call the predict method on it to make the predictions:  
+
+  ```python
+  df['<categorical_variable>'] = <value_1>
+  predictions1 = results.predict(df)
+
+  df['<categorical_variable>'] = <value_2>
+  predictions2 = results.predict(df)
+  ```  
+  
+- #### Visualizing predictions
+
+  The same way we did it for [Multiple Regression](#41-multiple-regression), we'll do it here:  
+
+  ```python
+  plt.plot(df['<variable1>', predictions1]) #this will take the linear space created and use it as the x-axis and the predictions on the y-axis
+
+  plt.plot(df['<variable1>', predictions2]) #this will take the linear space created and use it as the x-axis and the predictions on the y-axis
+
+  plt.plot(filtered, 'o', alpha=0.5) #plotting the average values of the real data, filtered before
+  ```  
 
 [empiricaldist]: https://pypi.org/project/empiricaldist/
 [Pearson's Correlation Coefficient]: https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
